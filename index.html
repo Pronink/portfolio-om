@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Observatorio Madrileño</title>
+        <meta charset="UTF-8">
+        <meta content="noindex, nofollow" name="robots">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                height: 100vh;
+                padding: 50px;
+                background: #dcdcdc;
+                perspective: 1000px;
+                overflow: hidden;
+            }
+
+            #container {
+                position: relative;
+                height: 100%;
+
+                & video {
+                    display: block;
+                    height: 100%;
+                    border-radius: 10px;
+                    margin: 0 auto;
+                    box-shadow: 0 5px 0 10px #404040,
+                    0 -5px 0 10px #404040,
+                    0 6px 20px 0 rgba(0, 0, 0, 1),
+                    20px 20px 100px 0 #000000b8;
+                }
+
+                & #mobileLayout {
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    height: 100%;
+                    aspect-ratio: 9 / 20;
+                    & > div {
+                        position: absolute;
+                        top: 0.7%;
+                        left: 1%;
+                        background: #323232;
+                        box-shadow: inset -3px -2px 0 1px #00000030;
+                        border-radius: 50%;
+                        height: 2.5vh;
+                        width: 2.5vh;
+                    }
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <video src="./Record_2024-10-26-18-53-27.mp4" autoplay loop muted></video>
+            <div id="mobileLayout"><div></div></div>
+        </div>
+        <script>
+            const maxXRotation = 15
+            const maxYRotation = 15
+            document.addEventListener("mousemove", (event) => {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const middleWidth = viewportWidth / 2;
+                const middleHeight = viewportHeight / 2;
+                const positionFromCenterX = middleWidth - event.clientX
+                const positionFromCenterY = middleHeight - event.clientY
+                const percentageFromCenterX = positionFromCenterX * maxXRotation / viewportWidth
+                const percentageFromCenterY = positionFromCenterY * maxYRotation / viewportHeight
+                document.getElementById('container').style.transform = 'rotateX(' + percentageFromCenterY + 'deg) rotateY(' + -percentageFromCenterX + 'deg)';
+                //console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
+            });
+
+
+            /*
+            Vitama's implementation with physics:
+            const frictionX = 0.9998
+            const frictionY = 0.9998
+            const deltaTms = 17
+            const movementFactor = 1
+            const maxXRotation = 45
+            const maxYRotation = 45
+            const maxVelocity = 45
+            velocityX = 0
+            velocityY = 0
+            actualRotationX = 0
+            actualRotationY = 0
+            document.addEventListener("mousemove", (event) => {
+                const movementX = event.movementX
+                const movementY = event.movementY
+                velocityX += movementX * movementFactor
+                velocityY += movementY * movementFactor
+            });
+            setInterval(() => {
+                velocityX *= frictionX
+                velocityY *= frictionY
+                actualRotationX += velocityX / deltaTms
+                actualRotationY += velocityY / deltaTms
+                if (Math.abs(actualRotationX) > maxXRotation) {
+                    actualRotationX = Math.sign(actualRotationX) * maxXRotation
+                    velocityX *= -1
+                }
+                if (Math.abs(actualRotationY) > maxYRotation) {
+                    actualRotationY = Math.sign(actualRotationY) * maxYRotation
+                    velocityY *= -1
+                }
+                document.getElementById('container').style.transform = 'rotateX(' + -actualRotationY + 'deg) rotateY(' + -actualRotationX + 'deg)';
+                console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
+            }, deltaTms)
+            */
+        </script>
+    </body>
+</html>

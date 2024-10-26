@@ -1,0 +1,10 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "npx http-server ./ -o",
+    "start-live": "npx lite-server --baseDir=\"./\""
+  },
+  "license": "UNLICENSED"
+}
