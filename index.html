@@ -12,20 +12,27 @@
 
             body {
                 margin: 0;
-                height: 100vh;
+                height: 100dvh;
+                width: 100dvw;
                 padding: 50px;
                 background: #dcdcdc;
                 perspective: 1000px;
                 overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             #container {
                 position: relative;
-                height: 100%;
+                max-height: 80%;
+                max-width: 80%;
+                aspect-ratio: 9 / 20;
 
                 & video {
                     display: block;
-                    height: 100%;
+                    max-height: 100%;
+                    max-width: 100%;
                     border-radius: 10px;
                     margin: 0 auto;
                     box-shadow: 0 5px 0 10px #404040,
@@ -48,8 +55,8 @@
                         background: #323232;
                         box-shadow: inset -3px -2px 0 1px #00000030;
                         border-radius: 50%;
-                        height: 2.5vh;
-                        width: 2.5vh;
+                        height: 2vh;
+                        width: 2vh;
                     }
                 }
             }
@@ -64,17 +71,25 @@
             if (!window.location.search.includes("vitama")) {
                 const maxXRotation = 15
                 const maxYRotation = 15
-                document.addEventListener("mousemove", (event) => {
+                const handleMove = (clientX, clientY) => {
                     const viewportWidth = window.innerWidth;
                     const viewportHeight = window.innerHeight;
                     const middleWidth = viewportWidth / 2;
                     const middleHeight = viewportHeight / 2;
-                    const positionFromCenterX = middleWidth - event.clientX
-                    const positionFromCenterY = middleHeight - event.clientY
+                    const positionFromCenterX = middleWidth - clientX
+                    const positionFromCenterY = middleHeight - clientY
                     const percentageFromCenterX = positionFromCenterX * maxXRotation / viewportWidth
                     const percentageFromCenterY = positionFromCenterY * maxYRotation / viewportHeight
                     document.getElementById('container').style.transform = 'rotateX(' + percentageFromCenterY + 'deg) rotateY(' + -percentageFromCenterX + 'deg)';
                     //console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
+                }
+                document.addEventListener("mousemove", (event) => {
+                    handleMove(event.clientX, event.clientY)
+                });
+                document.addEventListener("touchmove", (event) => {
+                    if (event.touches[0]) {
+                        handleMove(event.touches[0].clientX, event.touches[0].clientY)
+                    }
                 });
             } else {
                 // Vitama's implementation with physics:
@@ -89,11 +104,30 @@
                 let velocityY = 0
                 let actualRotationX = 0
                 let actualRotationY = 0
+                let lastTouchX = 0;
+                let lastTouchY = 0;
                 document.addEventListener("mousemove", (event) => {
                     const movementX = event.movementX
                     const movementY = event.movementY
                     velocityX += movementX * movementFactor
                     velocityY += movementY * movementFactor
+                    lastTouchX = event.clientX;
+                    lastTouchY = event.clientY;
+                });
+                document.addEventListener("touchmove", (event) => {
+                    if (event.touches[0]) {
+                        const touchX = event.touches[0].clientX;
+                        const touchY = event.touches[0].clientY;
+
+                        const movementX = touchX - lastTouchX;
+                        const movementY = touchY - lastTouchY;
+
+                        velocityX += movementX * movementFactor;
+                        velocityY += movementY * movementFactor;
+
+                        lastTouchX = touchX;
+                        lastTouchY = touchY;
+                    }
                 });
                 setInterval(() => {
                     velocityX *= frictionX
