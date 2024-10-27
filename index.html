@@ -61,58 +61,57 @@
             <div id="mobileLayout"><div></div></div>
         </div>
         <script>
-            const maxXRotation = 15
-            const maxYRotation = 15
-            document.addEventListener("mousemove", (event) => {
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                const middleWidth = viewportWidth / 2;
-                const middleHeight = viewportHeight / 2;
-                const positionFromCenterX = middleWidth - event.clientX
-                const positionFromCenterY = middleHeight - event.clientY
-                const percentageFromCenterX = positionFromCenterX * maxXRotation / viewportWidth
-                const percentageFromCenterY = positionFromCenterY * maxYRotation / viewportHeight
-                document.getElementById('container').style.transform = 'rotateX(' + percentageFromCenterY + 'deg) rotateY(' + -percentageFromCenterX + 'deg)';
-                //console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
-            });
-
-
-            /*
-            Vitama's implementation with physics:
-            const frictionX = 0.9998
-            const frictionY = 0.9998
-            const deltaTms = 17
-            const movementFactor = 1
-            const maxXRotation = 45
-            const maxYRotation = 45
-            const maxVelocity = 45
-            velocityX = 0
-            velocityY = 0
-            actualRotationX = 0
-            actualRotationY = 0
-            document.addEventListener("mousemove", (event) => {
-                const movementX = event.movementX
-                const movementY = event.movementY
-                velocityX += movementX * movementFactor
-                velocityY += movementY * movementFactor
-            });
-            setInterval(() => {
-                velocityX *= frictionX
-                velocityY *= frictionY
-                actualRotationX += velocityX / deltaTms
-                actualRotationY += velocityY / deltaTms
-                if (Math.abs(actualRotationX) > maxXRotation) {
-                    actualRotationX = Math.sign(actualRotationX) * maxXRotation
-                    velocityX *= -1
-                }
-                if (Math.abs(actualRotationY) > maxYRotation) {
-                    actualRotationY = Math.sign(actualRotationY) * maxYRotation
-                    velocityY *= -1
-                }
-                document.getElementById('container').style.transform = 'rotateX(' + -actualRotationY + 'deg) rotateY(' + -actualRotationX + 'deg)';
-                console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
-            }, deltaTms)
-            */
+            if (!window.location.search.includes("vitama")) {
+                const maxXRotation = 15
+                const maxYRotation = 15
+                document.addEventListener("mousemove", (event) => {
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    const middleWidth = viewportWidth / 2;
+                    const middleHeight = viewportHeight / 2;
+                    const positionFromCenterX = middleWidth - event.clientX
+                    const positionFromCenterY = middleHeight - event.clientY
+                    const percentageFromCenterX = positionFromCenterX * maxXRotation / viewportWidth
+                    const percentageFromCenterY = positionFromCenterY * maxYRotation / viewportHeight
+                    document.getElementById('container').style.transform = 'rotateX(' + percentageFromCenterY + 'deg) rotateY(' + -percentageFromCenterX + 'deg)';
+                    //console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
+                });
+            } else {
+                // Vitama's implementation with physics:
+                const frictionX = 0.98
+                const frictionY = 0.98
+                const deltaTms = 17
+                const movementFactor = 0.5
+                const maxXRotation = 60
+                const maxYRotation = 45
+                const maxVelocity = 45
+                let velocityX = 0
+                let velocityY = 0
+                let actualRotationX = 0
+                let actualRotationY = 0
+                document.addEventListener("mousemove", (event) => {
+                    const movementX = event.movementX
+                    const movementY = event.movementY
+                    velocityX += movementX * movementFactor
+                    velocityY += movementY * movementFactor
+                });
+                setInterval(() => {
+                    velocityX *= frictionX
+                    velocityY *= frictionY
+                    actualRotationX += velocityX / deltaTms
+                    actualRotationY += velocityY / deltaTms
+                    if (Math.abs(actualRotationX) > maxXRotation) {
+                        actualRotationX = Math.sign(actualRotationX) * maxXRotation
+                        velocityX *= -1
+                    }
+                    if (Math.abs(actualRotationY) > maxYRotation) {
+                        actualRotationY = Math.sign(actualRotationY) * maxYRotation
+                        velocityY *= -1
+                    }
+                    document.getElementById('container').style.transform = 'rotateX(' + -actualRotationY + 'deg) rotateY(' + actualRotationX + 'deg)';
+                    //console.log(`Actual rotation - Y: ${actualRotationY}, X: ${actualRotationX}`);
+                }, deltaTms)
+            }
         </script>
     </body>
 </html>
